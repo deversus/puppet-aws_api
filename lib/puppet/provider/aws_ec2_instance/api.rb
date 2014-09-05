@@ -162,9 +162,17 @@ Puppet::Type.type(:aws_ec2_instance).provide(:api, :parent => Puppetx::Bobtfish:
     super # taggable again
   end
 
+  def public_ip
+    if aws_item.has_elastic_ip?
+      aws_item.elastic_ip.public_ip
+    else
+      aws_item.public_ip_address
+    end
+  end
+
   def substitutions
     {
-      :public_ip => aws_item.public_ip_address,
+      :public_ip => self.public_ip,
       :cname => aws_item.public_dns_name
     }
   end
