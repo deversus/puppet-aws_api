@@ -15,6 +15,8 @@ Puppet::Type.type(:aws_cache_cluster).provide(:api, :parent => Puppetx::Bobtfish
   ensure_from_state(
     :available => :present,
     :creating => :available,
+    :deleting => :deleted,
+    :deleted => :absent,
   ) do |aws_item|
     aws_refresh(aws_item)[:cache_cluster_status]
   end
