@@ -118,21 +118,29 @@ Puppet::Type.type(:aws_elb).provide(:api, :parent => Puppetx::Bobtfish::Aws_api)
 
   protected
   def munge_listeners(listener)
-    {
+    config = {
       :load_balancer_port => listener['port'].to_i,
       :protocol => listener['protocol'],
       :instance_port => listener['instance_port'].to_i,
-      :instance_protocol => listener['instance_protocol']
+      :instance_protocol => listener['instance_protocol'],
     }
+    if listener['server_certificate']
+      config[:server_certificate] = iam.server_certificates[listener['server_certificate']]
+    end
+    config
   end
 
   def unmunge_listeners(listener)
-    {
+    config = {
       'port' => listener.port,
       'protocol' => listener.protocol.to_s,
       'instance_port' => listener.instance_port,
-      'instance_protocol' => listener.instance_protocol.to_s
+      'instance_protocol' => listener.instance_protocol.to_s,
     }
+    if listener.server_certificate
+      config['server_certificate'] = listener.server_certificate.name.to_s
+    end
+    config
   end
 end
 
