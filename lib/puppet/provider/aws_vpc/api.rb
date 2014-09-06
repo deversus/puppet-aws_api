@@ -117,7 +117,7 @@ Puppet::Type.type(:aws_vpc).provide(:api, :parent => Puppetx::Bobtfish::Aws_api)
         debug "Deleting RDS instance: #{dbi.db_name}"
         dbis << dbi
         unless dbi.status == 'deleting'
-          dbi.delete(:final_db_snapshot_identifier => "#{dbi.db_name}-final")
+          dbi.delete(:final_db_snapshot_identifier => "#{dbi.db_name.gsub('_', '-')}-final")
         end
       end
     end
